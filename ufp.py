@@ -8,28 +8,32 @@ def build_graph(G, solution):
     # Divido gli insieme di nodi
     facility_nodes = list()
     demand_nodes = list()
+    i = 0
     for u in G.nodes:
         if G.node[u]['bipartite'] == 0:
-                facility_nodes.append(u)
+            facility_nodes.append(u)
+            G.node[u]['y'] = solution[i]
+            if solution[i]:
+                R.add_node(u)
+            i += 1
         else:
-                demand_nodes.append(u)
+            demand_nodes.append(u)
     # Attivo le rispettive facility
-    i = 0
-    for y in solution:
-        G.node[facility_nodes[i]]['y'] = y
-        i += 1
+  
     
     # --- ALLOCATION ---
     edges = nx.get_edge_attributes(G, 'c')
+    facility = nx.get_node_attributes(G, 'y')
+    print(facility)
     for d in demand_nodes:
         min_cost = 10000
         edge_min = 0
         for uv in G.edges(d):
-                # Aggiungere condizione se f = 1
-                if edges[uv[::-1]] < min_cost:
-                        min_cost = edges[uv[::-1]]
-                        edge_min = uv
-        print(edge_min)
+            # Aggiungere condizione se f = 1
+            if edges[uv[::-1]] < min_cost and facility[uv[1]]:
+                min_cost = edges[uv[::-1]]
+                edge_min = uv
+        # print(edge_min)
         R.add_edge(edge_min[0], edge_min[1])
     return R
     
@@ -53,12 +57,14 @@ for f,p in zip(facility_list, facility_list_cost):
         transport_cost += 1
 
 plt.subplot(121)
-R = build_graph(G,[1,1,0,1])
+R = build_graph(G,[0,1,0,1])
 
 left = nx.bipartite.sets(G)[0]
 pos = nx.bipartite_layout(G, left)
 edges = nx.get_edge_attributes(G, 'c')
+plt.subplot(2, 1, 1)
 nx.draw(G, with_labels=True, font_weight='bold', pos=pos)
 nx.draw_networkx_edge_labels(G,font_weight='bold', edge_labels=edges, pos = pos)
-# nx.draw(R, with_labels=True, font_weight='bold')
+plt.subplot(2, 1, 2)
+nx.draw(R, with_labels=True, font_weight='bold')
 plt.show()
