@@ -3,24 +3,26 @@ import random
 
 
 def compute_fitness(population):
-    return 1
+    for p in population:
+        p.compute_fitness()
 
-def main_loop(generation, d, dup, l):
-    population = initialize_population(d, l)
-    #population = compute_fitness(population)
-    for solution in population:
-        print(solution.p)
+def main_loop(graph, generation, d, dup, l):
+    population = initialize_population(d, l, graph)
+    print(population[0].fitness)
+    print(population[0].permutation)
+    compute_fitness(population)
+    print(population[0].fitness)
 
 # Inizializzaione random di una popolazione di grandezza d e ogni soluzione lunga l
-def initialize_population(population_number,l):
+def initialize_population(population_number, l, G):
     population = []
     for _ in range(0, population_number):
-        population.append(gen_solution(l))
+        population.append(gen_solution(l, G))
     print("--- Inizializzazione popolazione conclusa ---")
     return population
 
 # Genera una soluzione random con una distribuzione uniforme
-def gen_solution(l):
+def gen_solution(l, G):
     permutation = []
     for _ in range(0,l):
         r = random.uniform(0,1)
@@ -28,7 +30,7 @@ def gen_solution(l):
             permutation.append(1)
         else:
             permutation.append(0)
-    result = Solution(permutation)
+    result = Solution(permutation, G)
     return result
 
 
