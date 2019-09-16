@@ -4,9 +4,9 @@ from istance_generator import load_graph
 generation = 1
 population = 5 # d
 clonation = 5 # dup
-rho = 1
+mutation_rate = 0.5
 tau_b = 5
 length_sol = 4 # Calcolare la lunghezza della soluzione dal numero delle facilities
 graph = load_graph('cap71.txt')
 
-main_loop(graph, generation, population, clonation, length_sol)
+main_loop(graph, generation, population, clonation, mutation_rate, length_sol)

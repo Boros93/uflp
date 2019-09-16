@@ -1,5 +1,5 @@
 import networkx as nx
-
+import math
 class Solution:
     def __init__(self, p, graph):
         self.permutation = p
@@ -31,6 +31,11 @@ class Solution:
                     min_cost = edges_cost[uv[::-1]]
             self.fitness += min_cost
 
+    def hypermutation(self, rho, max_f, min_f):
+        f = (self.fitness - min_f)/(max_f-min_f)
+        alpha = math.e**(-rho*f)
+        M = math.floor((alpha*len(self.permutation))-1)
+        print(self.fitness, ": ", M)
 
         
 
