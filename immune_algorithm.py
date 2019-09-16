@@ -1,23 +1,32 @@
 from solution import Solution
 import random 
-
-
-def compute_fitness(population):
-    for p in population:
-        p.compute_fitness()
+import copy
+import math 
 
 def main_loop(graph, generation, d, dup, l):
     population = initialize_population(d, l, graph)
-    print(population[0].fitness)
-    print(population[0].permutation)
     compute_fitness(population)
-    print(population[0].fitness)
+    for cell in population:
+        print(cell.permutation)
+        print(cell.fitness)
+    best_solution = choose_best_solution(population) 
+    print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
+    # Inizio Ciclo generazioni
+    for _ in range(0,generation):
+        # --- Cloning ---
+        population_clo = clonation(population, dup)
+        # --- Hypermutation ---
 
-# Inizializzaione random di una popolazione di grandezza d e ogni soluzione lunga l
+
+# Inizializzazione random di una popolazione di grandezza d e ogni soluzione lunga l
 def initialize_population(population_number, l, G):
     population = []
     for _ in range(0, population_number):
-        population.append(gen_solution(l, G))
+        new_cell = gen_solution(l, G)
+        # Se genera soluzioni con tutti 0, rigenera la soluzione
+        while(all(c == 0 for c in new_cell.permutation)):
+            new_cell = gen_solution(l, G)
+        population.append(new_cell)
     print("--- Inizializzazione popolazione conclusa ---")
     return population
 
@@ -32,6 +41,28 @@ def gen_solution(l, G):
             permutation.append(0)
     result = Solution(permutation, G)
     return result
+
+def choose_best_solution(population):
+    min_sol = math.inf
+    for cell in population:
+        if cell.fitness < min_sol:
+            best_solution = cell
+            min_sol = cell.fitness
+    return best_solution
+
+# Calcolo della fitness per ogni B cell
+def compute_fitness(population):
+    for p in population:
+        p.compute_fitness()
+
+# Clonazione dup volte
+def clonation(population, dup):
+    population_clo = []
+    for cell in population:
+        for _ in range(0,dup):
+            population_clo.append(copy.copy(cell))
+    print ("--- Clonazione terminata ---")
+    return population_clo
 
 
 
