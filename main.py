@@ -1,7 +1,7 @@
 from immune_algorithm import main_loop
 from istance_generator import load_graph
 # Parametri
-generation = 20
+generation = 50
 population = 5 # d
 clonation = 5 # dup
 mutation_rate = 0.5

@@ -59,5 +59,10 @@ class Solution:
             return True
         else:
             return False
-        
+    
+    def __repr__(self):
+        return '{}: {} {} {}'.format(self.__class__.__name__,
+                                  self.permutation,
+                                  self.fitness,
+                                  self.age)
 

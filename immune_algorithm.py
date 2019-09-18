@@ -11,7 +11,8 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
     print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
     print("Worst Solution:", worst_solution.permutation, " with fitness:", worst_solution.fitness)
     # Inizio Ciclo generazioni
-    for _ in range(0,generation):
+    for i in range(0,generation):
+        print("--- Inizio generazione ", i)
         # --- Cloning ---
         population_clo = clonation_operator(population, dup, tau_b, graph)
         # --- Hypermutation ---
@@ -21,15 +22,14 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
         population = population + population_clo
         # --- Aging ---
         best_solution = choose_best_solution(population)
+        worst_solution = choose_worst_solution(population)
         print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness, "and age:", best_solution.age)
         population = aging_operator(population, tau_b, best_solution)
-        print("--- Fine generazione ---")
+        # mu-lambda selection (Da rifinire)
+        population = mulambda_selection_operator(population, d)
+        print(" Fine generazione --- \n")
+        
 
-        # mu-lambda selection (Da implementare)
-        new_population = []
-        for _ in range(0, d):
-            new_population.append(random.choice(population))
-        population = new_population
 
 # Inizializzazione random di una popolazione di grandezza d e ogni soluzione lunga l
 def initialize_population(population_number, tau_b, l, G):
@@ -98,11 +98,18 @@ def hypermutation_operator(population, rho, max_f, min_f):
 def aging_operator(population, tau_b, best_solution):
     for p in population:
         if p.age > (tau_b + 1):
+            # Elitarismo
             if p != best_solution:
                 population.remove(p)
-            else:
-                print("Soluzione migliore non cancellata:", p.permutation, p.fitness)
         else:
             p.age += 1
 
     return population
+
+def mulambda_selection_operator(population, d):
+    def getKey(solution):
+        return solution.fitness
+    population=sorted(population, key=getKey)
+    # Aggiungere le soluzioni random se non raggiunge d
+    print("μ-λ Lambda selection terminata")
+    return population[:d]
