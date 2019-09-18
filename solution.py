@@ -2,10 +2,11 @@ import networkx as nx
 import math
 import random
 class Solution:
-    def __init__(self, p, f, graph):
+    def __init__(self, p, f, tau_b, graph):
         self.permutation = p
         self.fitness = f
         self.G = graph
+        self.age = tau_b
 
     def compute_fitness(self):
         self.fitness = 0
