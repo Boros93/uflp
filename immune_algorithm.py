@@ -11,14 +11,34 @@ def main_loop(graph, generation, d, dup, rho, l):
         print(cell.fitness)
     best_solution = choose_best_solution(population)
     worst_solution = choose_worst_solution(population) 
-    print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
-    print("Worst Solution:", worst_solution.permutation, " with fitness:", worst_solution.fitness)
+    #print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
+    #print("Worst Solution:", worst_solution.permutation, " with fitness:", worst_solution.fitness)
     # Inizio Ciclo generazioni
     for _ in range(0,generation):
+        print("POPOLAZIONE T")
+        for pop in population:
+            print(pop.permutation)
         # --- Cloning ---
-        #population_clo = clonation(population, dup)
+        population_clo = clonation(population, dup, graph)
+        print("POPOLAZIONE Clonata")
+        for pop in population_clo:
+            print(pop.permutation)
+        print("-----")
         # --- Hypermutation ---
-        population_hyp = hypermutation(population, rho, worst_solution, best_solution)
+        hypermutation(population_clo, rho, worst_solution, best_solution)
+        print("POPOLAZIONE Mutata")
+        for pop in population_clo:
+            print(pop.permutation)
+        print("-----")
+        for cell in population_clo:
+            print(cell.permutation)
+            print(cell.fitness)
+        compute_fitness(population_clo)
+        print("--------")
+        for cell in population_clo:
+            print(cell.permutation)
+            print(cell.fitness)
+        
 
 
 # Inizializzazione random di una popolazione di grandezza d e ogni soluzione lunga l
@@ -42,7 +62,7 @@ def gen_solution(l, G):
             permutation.append(1)
         else:
             permutation.append(0)
-    result = Solution(permutation, G)
+    result = Solution(permutation, 0, G)
     return result
 
 def choose_best_solution(population):
@@ -67,19 +87,17 @@ def compute_fitness(population):
         p.compute_fitness()
 
 # Clonazione dup volte
-def clonation(population, dup):
+def clonation(population, dup, G):
     population_clo = []
     for cell in population:
         for _ in range(0,dup):
-            population_clo.append(copy.copy(cell))
+            population_clo.append(Solution(p = cell.permutation, f = cell.fitness, graph = G))
     print ("--- Clonazione terminata ---")
     return population_clo
 
 def hypermutation(population, rho, max_f, min_f):
     population_hyp = []
     for cell in population:
-        print(cell.hypermutation(rho, max_f.fitness, min_f.fitness - (min_f.fitness*50/100)))
-    return 0
-
+        cell.hypermutation(rho, max_f.fitness, min_f.fitness - (min_f.fitness*50/100))
 
 
