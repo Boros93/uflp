@@ -26,7 +26,7 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
         print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness, "and age:", best_solution.age)
         population = aging_operator(population, tau_b, best_solution)
         # mu-lambda selection (Da rifinire)
-        population = mulambda_selection_operator(population, d)
+        population = mulambda_selection_operator(population, d, l, tau_b, graph)
         print(" Fine generazione --- \n")
         
 
@@ -87,13 +87,13 @@ def clonation_operator(population, dup, tau_b, G):
             upper_bound = math.floor((2/3)*tau_b)
             age = random.randint(0,upper_bound)
             population_clo.append(Solution(cell.permutation, cell.fitness, age, G))
-    print ("*** Clonazione terminata ***")
+    print ("--- Clonazione terminata")
     return population_clo
 
 def hypermutation_operator(population, rho, max_f, min_f):
     for cell in population:
         cell.hypermutation(rho, max_f.fitness, min_f.fitness - (min_f.fitness*50/100))
-    print('<<< Hypermutazione terminata >>>')
+    print('--- Hypermutazione terminata')
 
 def aging_operator(population, tau_b, best_solution):
     for p in population:
@@ -106,10 +106,14 @@ def aging_operator(population, tau_b, best_solution):
 
     return population
 
-def mulambda_selection_operator(population, d):
+def mulambda_selection_operator(population, d, l, tau_b, G):
     def getKey(solution):
         return solution.fitness
     population=sorted(population, key=getKey)
-    # Aggiungere le soluzioni random se non raggiunge d
-    print("μ-λ Lambda selection terminata")
+    # Aggiunge le soluzioni random se non raggiunge d
+    if len(population) < d:
+        diff = d - len(population)
+        for _ in range(0, diff):
+            population.append(gen_solution(l, tau_b, G))
+    print("--- μ-λ Lambda selection terminata")
     return population[:d]
