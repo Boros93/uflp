@@ -37,17 +37,14 @@ def load_graph(name_file):
         while i < int(parameters[0]):
             line = f.readline().split()
             for cost in line:
-                G.add_edge('f'+ str(i), u, c = cost)
+                G.add_edge(u, 'f'+ str(i), c = float(cost))
                 i+=1
-            
-        
-    print(len(G.edges))
-        
-    
-    for e in G.edges:
-        print(e, " cost:", G.edges[e]['c'])
+
+    '''costi = nx.get_edge_attributes(G,'c')
+    for c in costi:
+        print(c, ':', costi[c])'''
     f.close()
-    return G
+    return G, int(parameters[0])
 
 
 def load_demo_graph():
@@ -66,12 +63,12 @@ def load_demo_graph():
         for d in demand_list:
             G.add_edge(d, f,  c = transport_cost)
             transport_cost += 1
-
+    
     return G
 
 def add_nodes(number, prefix, G, b):
     for i in range(0, number):
         if prefix == 'f':
-            G.add_node(prefix + str(i), f = 0, bipartite = b)
+            G.add_node(prefix + str(i), f = 0, y = 0, bipartite = b)
         else:
-            G.add_node(prefix + str(i), bipartite = b)
+            G.add_node(prefix + str(i), bipartite = b, x = 0)
