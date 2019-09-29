@@ -1,12 +1,20 @@
 from immune_algorithm import main_loop
 from istance_generator import load_graph
+import statistics 
 # Parametri
-generation = 200
-population = 100 # d
-clonation = 4 # dup
-mutation_rate = 0.7
-tau_b = 10 # Calcolare la lunghezza della soluzione dal numero delle facilities
-graph, length_sol = load_graph('Instances/cap71.txt')
+generation = 2000
+population = 200# d
+clonation = 2 # dup
+mutation_rate = 0.5
+tau_b = 100
 
+graph, length_sol = load_graph('Instances/cap101.txt')
 
-main_loop(graph, generation, population, clonation, mutation_rate, tau_b, length_sol)
+result = []
+for i in range(0, 1):
+    result.append(main_loop(graph, generation, population, clonation, mutation_rate, tau_b, length_sol))
+print("Results:", result)
+print("Mean:", statistics.mean(result))
+print("Best:", min(result))
+print("Worst:", max(result))
+print("Std:", statistics.stdev(result))

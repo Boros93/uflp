@@ -2,15 +2,17 @@ from solution import Solution
 import random 
 import copy
 import math 
-
+import matplotlib.pyplot as plt
 def main_loop(graph, generation, d, dup, rho, tau_b, l):
     population = initialize_population(d, tau_b, l, graph)
     compute_fitness(population)
     best_solution = choose_best_solution(population)
     worst_solution = choose_worst_solution(population) 
     print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
-    print("Worst Solution:", worst_solution.permutation, " with fitness:", worst_solution.fitness)
+    # print("Worst Solution:", worst_solution.permutation, " with fitness:", worst_solution.fitness)
     # Inizio Ciclo generazioni
+    #optima = []
+    #gen = []
     for i in range(0,generation):
         print("--- Inizio generazione ", i)
         # --- Cloning ---
@@ -27,7 +29,15 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
         population = aging_operator(population, tau_b, best_solution)
         # mu-lambda selection (Da rifinire)
         population = mulambda_selection_operator(population, d, l, tau_b, graph)
-        print(" Fine generazione --- \n")
+        # print(" Fine generazione --- \n")
+        #optima.append(best_solution.fitness)
+        #gen.append(i)
+    # Plot
+    '''plt.xlabel('Generation')
+    plt.ylabel('Best Solution')
+    plt.plot(gen, optima)
+    plt.show()'''
+    return best_solution.fitness
         
 
 
@@ -87,13 +97,13 @@ def clonation_operator(population, dup, tau_b, G):
             upper_bound = math.floor((2/3)*tau_b)
             age = random.randint(0,upper_bound)
             population_clo.append(Solution(cell.permutation, cell.fitness, age, G))
-    print ("--- Clonazione terminata")
+    # print ("--- Clonazione terminata")
     return population_clo
 
 def hypermutation_operator(population, rho, max_f, min_f):
     for cell in population:
         cell.hypermutation(rho, max_f.fitness, min_f.fitness - (min_f.fitness*50/100))
-    print('--- Hypermutazione terminata')
+    # print('--- Hypermutazione terminata')
 
 def aging_operator(population, tau_b, best_solution):
     for p in population:
@@ -115,5 +125,5 @@ def mulambda_selection_operator(population, d, l, tau_b, G):
         diff = d - len(population)
         for _ in range(0, diff):
             population.append(gen_solution(l, tau_b, G))
-    print("--- μ-λ Lambda selection terminata")
+    # print("--- μ-λ Lambda selection terminata")
     return population[:d]
