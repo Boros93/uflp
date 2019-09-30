@@ -13,6 +13,11 @@
 \usepackage[left=2.5cm, right=2.5cm]{geometry}
 \usepackage{parskip}
 \usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
 \hypersetup{colorlinks=false,
 allbordercolors=white}
 \setcounter{secnumdepth}{4} 
@@ -57,8 +62,8 @@ allbordercolors=white}
 
 \section{Introduzione}
 
-
 \section{Definizione del problema}
+
 In un problema UFLP, ci sono $m$ clienti da servire ed $n$ possibili location dove poter stabilire delle facilities che servano i clienti e soddisfare la domanda. Ogni facility $i$ ha un costo fisso di installazione $f_{i}$. Un costo di trasporto $c_{ij}$ per servire il il cliente $j$ dalla facility $i$. Le facility non hanno limiti nelle capacità di quanto possono servire e non ci devono essere clienti non soddisfatti. L'obiettivo finale è quello di stabilire quali facility attivare, soddisfando tutti i clienti, minimizzando il costo per ottenere ciò. Formalmente:
 
 \begin{equation*}
@@ -111,11 +116,12 @@ Per ogni soluzione del problema di Location, una soluzione ottima può essere ot
 
 Quindi il problema si riduce a determinare l'assegnamento di facilities ottimale.
 \section{Algoritmo immunologico}
+
 Un algoritmo immunologico è un algoritmo basato sul clonal selection principle, esso è un ottimo esempio di strategia intelligente in cui l'adattamento opera a livello locale, mentre un comportamento complesso agisce a livello globale. L'idea di questa tipologia di algoritmo deriva dal sistema immunitario naturale, in particolare da come le cellule si adattano per legarsi ed eliminare
-entità straniere, meglio conosciute come Antigene. Questo algoritmo è basato su due entità: gli \textbf{antigeni} che rappresentano il problema da affrontare e le \textbf{B cell} (Linfocita B) che rappresentano un punto nello spazio di ricerca \cite{Pavone}. L'algoritmo crea una popolazione di B cell, esse cresceranno e si perfezioneranno nel corso di un numero prefissato di generazioni, morendo quando hanno raggiunto un'età prefissata. La qualità delle B cell si valuta attraverso una funzione di fitness. Gli operatori usati da questo algoritmo sono in sequenza i seguenti:
+entità straniere, meglio conosciute come Antigene. Questo algoritmo è basato su due entità: gli \textbf{antigeni} che rappresentano il problema da affrontare e le \textbf{B cell} (Linfocita B) che rappresentano un punto nello spazio di ricerca \cite{Pavone}. L'algoritmo crea una popolazione di B cell, esse cresceranno e si perfezioneranno nel corso di un numero prefissato di generazioni, morendo quando hanno raggiunto un'età prefissata. La qualità delle B cell si valuta attraverso una funzione di fitness. Come primo passo, l'algoritmo genera una popolazione random $P^{(t)}$ e successivamente usa i seguenti operatori in sequenza:
 \begin{enumerate}
-\item \textbf{Cloning}: questo operatore simula il meccanismo di proliferazione di un sistema immunitario. Esso genera una popolazione intermedia $P^{(clo)}$ copiando \textit{dup} volte ogni B cell, assegnando un'età, la nuova popolazione così fatta sarà delle dimensioni \textit{$d \times dup$}. 
-\item \textbf{Inversely Hypermutation}: il compito di questo operatore è quello di esplorare il vicinato di ogni clone creato dal precedente operatore. Ciò viene compiuto eseguendo $M$ mutazioni ad ogni elemento di $P^{(clo)}$. Per determinare $M$, viene adottata una legge inversamente proporzionale al valore della fitness: più piccolo (minimizzazione) è il valore valore della funzione di fitness, meno mutazioni saranno fatte alla B cell. Dato un clone $x$, per determinare il valore $M$ è necessaria la seguente formula:
+\item \textbf{Cloning}: questo operatore simula il meccanismo di proliferazione di un sistema immunitario. Esso genera una popolazione intermedia $P^{(clo)}$ copiando \textit{dup} volte ogni B cell, assegnando un'età casuale tra $[0, \frac{2}{3} \tau_{b}]$, la nuova popolazione così fatta sarà delle dimensioni \textit{$d \times dup$}. 
+\item \textbf{Inversely Hypermutation}: il compito di questo operatore è quello di esplorare il vicinato di ogni clone creato dal precedente operatore. Ciò viene compiuto eseguendo $M$ mutazioni ad ogni elemento di $P^{(clo)}$ e ottenendo la nuova popolazione $P^{(hyp)}$. Per determinare $M$, viene adottata una legge inversamente proporzionale al valore della fitness: più piccolo (minimizzazione) è il valore valore della funzione di fitness, meno mutazioni saranno fatte alla B cell. Dato un clone $x$, per determinare il valore $M$ è necessaria la seguente formula:
 \begin{equation}
 \alpha=e^{-\rho\hat{f}(x)}
 \end{equation}
@@ -124,12 +130,37 @@ dove $\alpha$ rappresenta il mutation rate,$\rho$ lo shape del mutation rate e $
 M = \lfloor(\alpha \times l) + 1 \rfloor
 \end{equation}
 dove $l$ è la lunghezza di una B cell. 
-\item \textbf{Aging}: questo operatore aiuta l'algoritmo a saltare via dagli ottimi locali. Per ottenere ciò, rimuove le vecchie B cell dalla popolazione iniziale e da quella ipermutata. L'eliminazione avviene quando l'età (che viene incrementata ad ogni fine generazione) raggiunge l'età massima ($\tau_{b}$). Così facendo, si produce alta diversità e si aiuta l'algoritmo ad evitare le convergenze premature. Viene anche fatta un eccezione nella rimozione, ovvero lasciare la migliore soluzione nella popolazione anche se ha raggiunto la massima età. Questa variante viene chiamata \textit{elitist aging operator}.
-\item \textbf{($\mathbf{\mu + \lambda}$)-Selection}:
+\item \textbf{Aging}: questo operatore aiuta l'algoritmo a saltare via dagli ottimi locali. Per ottenere ciò, rimuove le vecchie B cell dalla popolazione iniziale e da quella ipermutata. L'eliminazione avviene quando l'età (che viene incrementata ad ogni fine generazione) raggiunge l'età massima ($\tau_{B}$). Così facendo, si produce alta diversità e si aiuta l'algoritmo ad evitare le convergenze premature. Viene anche fatta un eccezione nella rimozione, ovvero lasciare la migliore soluzione nella popolazione anche se ha raggiunto la massima età. Questa variante viene chiamata \textit{elitist aging operator}.
+\item \textbf{($\mathbf{\mu + \lambda}$)-Selection}: l'ultimo operatore sceglie le migliori \textit{d} B cell da mandare alla generazione successiva. In questo caso si ha $\mu = d$ e $\lambda = (d \times dup)$, questo operatore riduce la grandezza della popolazione di grandezza $\lambda \geq  \mu$ in nuova popolazione di dimensione $\mu=d$. A volte può accadere che siano sopravvissuti meno B cell di quelli richiesti per avere la giusta dimensione della popolazione. In questo caso, vengono generate casualmente delle nuove B cell per raggiungere la giusta dimensione.
+\begin{algorithm}
+\caption{Immunological Algorithm (d, dup, $\rho$, $\tau_{B}, n\_gen$)}\label{euclid}
+\begin{algorithmic}[1]
+\State $t \gets 0$
+\State $P^{(t)} \gets Initialize\_Population(d)$;
+\State $Compute\_Fitness(P^{(t)})$;
+\Repeat
+\State $P^{(clo)} \gets Cloning(P^{(t)},dup)$;
+\State $P^{(hyp)} \gets Hypermutation(P^{(clo)},\rho)$;
+\State $Compute\_Fitness(P^{(hyp)})$
+\State $(P_{a}^{(t)},P_{a}^{(hyp)}) \gets Aging(P^{(t)}, P^{(hyp)}, \tau_B)$
+\State $P^{(select)} \gets (\mu + \lambda)-Selection(P_a^{(t)}, P_a^{(hyp)})$;
+\State $Compute\_Fitness(P^{(t+1)})$;
+\State $t \gets t + 1$;
+\Until number of generation reached
+\end{algorithmic}
+\end{algorithm}
 \end{enumerate}
-\section{Implementazione}
 
+\section{Implementazione}
+Per implementare questo algoritmo immunologico e adattarlo al problema UFLP è stato usato il linguaggio di programmazione di Python e per le operazioni sui grafi, è stata usata la libreria \textbf{networkx}\footnote[10]{https://networkx.github.io/}. Per rappresentare ogni soluzione (B cell) sono stati usati dei vettori binari, dove 0 indica che la facility è disattivata e 1 la facility è attivata. La funzione di fitness viene calcolata tenendo conto della configurazione del vettore delle facilities, per ogni customer viene considerato l'arco (disponibile) con il minore costo così da soddisfare i requisiti del sottoproblema Allocation. Gli script creati sono i seguenti:
+\begin{itemize}
+  \item \textbf{immune\_algorithm.py}: tramite questo script viene eseguito tutto il flusso dell'algoritmo, quindi vengono implementati i vari operatori e gestita la popolazione;
+  \item \textbf{instance\_generator.py}: questo script genera un'istanza dal problema da un file di testo che segue un determinato formato dati;
+  \item \textbf{solution.py}: questa classe implementa una B cell, in essa è contenuta una permutazione (vettore binario), l'età, la fitness e il metodo per calcolarla. Inoltre è implementato il metodo per eseguire l'ipermutazione;
+  \item \textbf{main.py}: questo è lo script da eseguire per eseguire l'intero programma, da esso si possono settare i vari parametri: numero delle generazioni da eseguire, numero di B cell della popolazione, numero di clonazioni, il parametro $\rho$ per l'hypermutation e $\tau_{B}$;
+\end{itemize}
 \section{Esperimenti}
+
 \section{Conclusioni}
 \newpage
 \bibliography{bibliografia}{}
