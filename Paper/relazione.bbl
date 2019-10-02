@@ -1,0 +1,39 @@
+\begin{thebibliography}{1}
+
+\bibitem{Sultan1999}
+K.S. Al‐Sultan and M.A. Al‐Fawzan.
+\newblock A tabu search approach to the uncapacitated facility location
+  problem.
+\newblock {\em Annals of Operations Research}, 86(0):91--103, Jan 1999.
+
+\bibitem{Beasley1990}
+J.~E. Beasley.
+\newblock Or-library: Distributing test problems by electronic mail.
+\newblock {\em Journal of the Operational Research Society}, 41(11):1069--1072,
+  Nov 1990.
+
+\bibitem{npcit}
+Michael~R. Garey and David~S. Johnson.
+\newblock {\em Computers and Intractability; A Guide to the Theory of
+  NP-Completeness}.
+\newblock W. H. Freeman \& Co., New York, NY, USA, 1990.
+
+\bibitem{intro1}
+Ali Guner and Mehmet Şevkli.
+\newblock A discrete particle swarm optimization algorithm for uncapacitated
+  facility location problem.
+\newblock {\em Journal of Artificial Evolution and Applications}, 2008, 04
+  2008.
+
+\bibitem{intro2}
+Jakob Krarup and Peter~Mark Pruzan.
+\newblock The simple plant location problem: Survey and synthesis.
+\newblock {\em European Journal of Operational Research}, 12(1):36 -- 81, 1983.
+
+\bibitem{Pavone}
+Mario Pavone and Giuseppe Nicosia.
+\newblock Clonal selection - an immunological algorithm for global optimization
+  over continuous spaces.
+\newblock {\em Journal of Global Optimization}, 53:1--40, 08 2011.
+
+\end{thebibliography}

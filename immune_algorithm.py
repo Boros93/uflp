@@ -8,7 +8,7 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
     compute_fitness(population)
     best_solution = choose_best_solution(population)
     worst_solution = choose_worst_solution(population) 
-    print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
+    # print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness)
     # print("Worst Solution:", worst_solution.permutation, " with fitness:", worst_solution.fitness)
     # Inizio Ciclo generazioni
     #optima = []
@@ -25,7 +25,7 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
         # --- Aging ---
         best_solution = choose_best_solution(population)
         worst_solution = choose_worst_solution(population)
-        print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness, "and age:", best_solution.age)
+        # print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness, "and age:", best_solution.age)
         population = aging_operator(population, tau_b, best_solution)
         # mu-lambda selection (Da rifinire)
         population = mulambda_selection_operator(population, d, l, tau_b, graph)
@@ -37,6 +37,7 @@ def main_loop(graph, generation, d, dup, rho, tau_b, l):
     plt.ylabel('Best Solution')
     plt.plot(gen, optima)
     plt.show()'''
+    print("Best Solution:", best_solution.permutation, " with fitness:", best_solution.fitness, "and age:", best_solution.age)
     return best_solution.fitness
         
 
@@ -50,7 +51,7 @@ def initialize_population(population_number, tau_b, l, G):
         while(all(c == 0 for c in new_cell.permutation)):
             new_cell = gen_solution(l, tau_b, G)
         population.append(new_cell)
-    print("+++ Inizializzazione popolazione conclusa +++")
+    #print("+++ Inizializzazione popolazione conclusa +++")
     return population
 
 # Genera una soluzione random con una distribuzione uniforme
